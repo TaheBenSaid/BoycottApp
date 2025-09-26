@@ -19,10 +19,22 @@ class CameraRepositoryImpl implements CameraRepository {
     );
 
     await _controller!.initialize();
+    await _controller!.setFlashMode(FlashMode.off);
     return _controller;
   }
 
   CameraController? get controller => _controller;
+
+  Future<void> toggleFlash() async {
+    if (_controller?.value.isInitialized == true) {
+      final currentFlashMode = _controller!.value.flashMode;
+      final newFlashMode =
+          currentFlashMode == FlashMode.off ? FlashMode.torch : FlashMode.off;
+      await _controller!.setFlashMode(newFlashMode);
+    }
+  }
+
+  bool get isFlashOn => _controller?.value.flashMode == FlashMode.torch;
 
   @override
   Future<CapturedImage?> takePicture() async {
@@ -35,7 +47,6 @@ class CameraRepositoryImpl implements CameraRepository {
       }
     }
 
-    // Fallback to image picker if camera fails
     final XFile? file = await picker.pickImage(source: ImageSource.camera);
     if (file != null) {
       return CapturedImage(file.path);

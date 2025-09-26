@@ -15,7 +15,6 @@ class CameraCubit extends Cubit<CapturedImage?> {
 
   Future<void> initializeCamera() async {
     _cameraController = await repository.initializeCamera();
-    // Emit null to trigger UI rebuild with camera preview
     emit(null);
   }
 
@@ -23,6 +22,13 @@ class CameraCubit extends Cubit<CapturedImage?> {
     final image = await takePictureUseCase();
     emit(image);
   }
+
+  Future<void> toggleFlash() async {
+    await repository.toggleFlash();
+    emit(null);
+  }
+
+  bool get isFlashOn => repository.isFlashOn;
 
   void clear() => emit(null);
 
