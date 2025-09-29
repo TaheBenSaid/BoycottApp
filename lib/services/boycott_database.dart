@@ -48,7 +48,6 @@ class BoycottDatabase {
         'Eco-friendly alternatives'
       ],
     ),
-
     'lux': ProductInfo(
       displayName: 'Lux',
       companyName: 'Unilever',
@@ -127,7 +126,6 @@ class BoycottDatabase {
         'Shea butter'
       ],
     ),
-
     'nestle': ProductInfo(
       displayName: 'Nestlé',
       companyName: 'Nestlé S.A.',
@@ -167,7 +165,6 @@ class BoycottDatabase {
         'Organic chocolate'
       ],
     ),
-
     'ferrero': ProductInfo(
       displayName: 'Ferrero',
       companyName: 'Ferrero Group',
@@ -207,7 +204,6 @@ class BoycottDatabase {
         'Organic alternatives'
       ],
     ),
-
     'lays': ProductInfo(
       displayName: 'Lay\'s',
       companyName: 'PepsiCo',
@@ -221,7 +217,6 @@ class BoycottDatabase {
         'Healthier snack alternatives'
       ],
     ),
-
     'gliss': ProductInfo(
       displayName: 'Gliss',
       companyName: 'L\'Oréal',
@@ -235,7 +230,6 @@ class BoycottDatabase {
         'Organic shampoos'
       ],
     ),
-
     'schweps': ProductInfo(
       displayName: 'Schweppes',
       companyName: 'The Coca-Cola Company',
@@ -249,7 +243,6 @@ class BoycottDatabase {
         'Homemade sparkling drinks'
       ],
     ),
-
     'mustela': ProductInfo(
       displayName: 'Mustela',
       companyName: 'Laboratoires Expanscience',
@@ -262,7 +255,6 @@ class BoycottDatabase {
         'Organic alternatives'
       ],
     ),
-
     'uriage': ProductInfo(
       displayName: 'Uriage',
       companyName: 'Laboratoires Dermatologiques d\'Uriage',
@@ -275,7 +267,6 @@ class BoycottDatabase {
         'Organic dermatology'
       ],
     ),
-
     'maestro': ProductInfo(
       displayName: 'Maestro',
       companyName: 'Various',
@@ -284,7 +275,6 @@ class BoycottDatabase {
       boycottReason: '',
       alternatives: ['Local alternatives', 'Research specific product'],
     ),
-
     'president': ProductInfo(
       displayName: 'Président',
       companyName: 'Lactalis Group',

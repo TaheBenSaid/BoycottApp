@@ -84,7 +84,6 @@ class _ResultContent extends StatelessWidget {
           ),
           const SizedBox(height: 16),
         ],
-
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -95,20 +94,16 @@ class _ResultContent extends StatelessWidget {
                 companyName: boycottInfo.companyName,
               ),
               const SizedBox(height: 12),
-
               if (inferenceResult != null) ...[
                 InferenceDetailsCard(inferenceResult: inferenceResult!),
                 const SizedBox(height: 12),
               ],
-
               ProductDescription(
                 description: boycottInfo.description,
               ),
               const SizedBox(height: 12),
-
               if (boycottInfo.isBoycotted) const OpenProofButton(),
               const SizedBox(height: 16),
-
               AlternativesSection(alternatives: boycottInfo.alternatives),
               const SizedBox(height: 20),
               const SharePanel(),
