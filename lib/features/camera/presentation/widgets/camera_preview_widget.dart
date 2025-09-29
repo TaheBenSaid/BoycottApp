@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/camera_cubit.dart';
+import 'recognition_overlay_widget.dart';
 
 class CameraPreviewWidget extends StatelessWidget {
   const CameraPreviewWidget({super.key});
@@ -15,7 +16,13 @@ class CameraPreviewWidget extends StatelessWidget {
         final controller = cubit.cameraController;
 
         if (state == null && controller?.value.isInitialized == true) {
-          return CameraPreview(controller!);
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              CameraPreview(controller!),
+              RecognitionOverlayWidget(cameraController: controller),
+            ],
+          );
         } else if (state == null) {
           return _LoadingView();
         } else {

@@ -54,7 +54,10 @@ class _CameraViewWithNavigation extends StatelessWidget {
         if (state != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => ResultPage(imagePath: state.path),
+              builder: (_) => ResultPage(
+                imagePath: state.path,
+                inferenceResult: state.inferenceResult,
+              ),
             ),
           );
         }

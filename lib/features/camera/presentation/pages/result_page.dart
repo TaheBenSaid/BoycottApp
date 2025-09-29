@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import '../widgets/result_page_widgets.dart';
+import '../../../../services/tflite_service.dart';
+import '../../../../services/boycott_database.dart' as boycott_db;
 
 class ResultPage extends StatelessWidget {
   final String imagePath;
+  final InferenceResult? inferenceResult;
 
-  const ResultPage({super.key, required this.imagePath});
+  const ResultPage({
+    super.key,
+    required this.imagePath,
+    this.inferenceResult,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +28,8 @@ class ResultPage extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 ),
-                child: const SingleChildScrollView(
-                  child: _ResultContent(),
+                child: SingleChildScrollView(
+                  child: _ResultContent(inferenceResult: inferenceResult),
                 ),
               ),
             ),
@@ -35,35 +42,77 @@ class ResultPage extends StatelessWidget {
 }
 
 class _ResultContent extends StatelessWidget {
-  const _ResultContent();
+  final InferenceResult? inferenceResult;
+
+  const _ResultContent({this.inferenceResult});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    // Get boycott info from inference result or use default
+    final boycottInfo = inferenceResult?.boycottInfo ??
+        boycott_db.BoycottInfo(
+          productName: 'Unknown Product',
+          companyName: 'Unknown Company',
+          description:
+              'Unable to analyze the product. Please try again with a clearer image.',
+          isBoycotted: false,
+          alternatives: ['Try scanning again', 'Check product manually'],
+        );
+
+    return Column(
       children: [
-        BoycottWarningBanner(),
-        SizedBox(height: 16),
+        if (boycottInfo.isBoycotted) ...[
+          const BoycottWarningBanner(),
+          const SizedBox(height: 16),
+        ] else ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE1F5E1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              inferenceResult != null
+                  ? 'Product analyzed - No boycott information found.'
+                  : 'Unable to analyze product. Please try again.',
+              style: const TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProductInfo(
-                productName: 'Starbucks',
-                companyName: 'Starbucks inc',
+                productName: boycottInfo.productName,
+                companyName: boycottInfo.companyName,
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
+
+              if (inferenceResult != null) ...[
+                InferenceDetailsCard(inferenceResult: inferenceResult!),
+                const SizedBox(height: 12),
+              ],
+
               ProductDescription(
-                description:
-                    "Le boycott a pour but et pour effet de déranger et de nuire à autrui. Dans un État de droit fondés sur des préceptes comme « neminem laedere » qui interdisent de nuire à autrui, la question du boycott se trouve à la limite de la légalité et nécessite certaines formes de retenue.",
+                description: boycottInfo.description,
               ),
-              SizedBox(height: 12),
-              OpenProofButton(),
-              SizedBox(height: 16),
-              AlternativesSection(),
-              SizedBox(height: 20),
-              SharePanel(),
-              SizedBox(height: 70),
+              const SizedBox(height: 12),
+
+              if (boycottInfo.isBoycotted) const OpenProofButton(),
+              const SizedBox(height: 16),
+
+              AlternativesSection(alternatives: boycottInfo.alternatives),
+              const SizedBox(height: 20),
+              const SharePanel(),
+              const SizedBox(height: 70),
             ],
           ),
         ),

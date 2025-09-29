@@ -5,8 +5,14 @@ import 'features/camera/domain/usecases/take_picture_usecase.dart';
 import 'features/camera/presentation/bloc/camera_cubit.dart';
 import 'features/camera/presentation/pages/camera_page.dart';
 import 'package:image_picker/image_picker.dart';
+import 'services/tflite_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Pre-initialize TensorFlow Lite service
+  await TFLiteService.instance.initialize();
+
   final cameraRepository = CameraRepositoryImpl(ImagePicker());
   final takePictureUseCase = TakePictureUseCase(cameraRepository);
 

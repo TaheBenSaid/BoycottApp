@@ -2,12 +2,17 @@ import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../domain/entities/captured_image.dart';
 import '../../domain/repositories/camera_repository.dart';
+import '../../../../services/tflite_service.dart';
 
 class CameraRepositoryImpl implements CameraRepository {
   final ImagePicker picker;
   CameraController? _controller;
 
   CameraRepositoryImpl(this.picker);
+
+  Future<bool> initializeTensorFlow() async {
+    return await TFLiteService.instance.initialize();
+  }
 
   Future<CameraController?> initializeCamera() async {
     final cameras = await availableCameras();
@@ -38,20 +43,43 @@ class CameraRepositoryImpl implements CameraRepository {
 
   @override
   Future<CapturedImage?> takePicture() async {
+    String? imagePath;
+
     if (_controller?.value.isInitialized == true) {
       try {
         final XFile file = await _controller!.takePicture();
-        return CapturedImage(file.path);
+        imagePath = file.path;
       } catch (e) {
         print('Error taking picture: $e');
       }
     }
 
-    final XFile? file = await picker.pickImage(source: ImageSource.camera);
-    if (file != null) {
-      return CapturedImage(file.path);
+    if (imagePath == null) {
+      final XFile? file = await picker.pickImage(source: ImageSource.camera);
+      if (file != null) {
+        imagePath = file.path;
+      }
     }
-    return null;
+
+    if (imagePath == null) {
+      return null;
+    }
+
+    // Run inference on the captured image
+    InferenceResult? inferenceResult;
+    try {
+      if (TFLiteService.instance.isInitialized) {
+        inferenceResult = await TFLiteService.instance.runInference(imagePath);
+      } else {
+        print('TFLite service not initialized, initializing now...');
+        await initializeTensorFlow();
+        inferenceResult = await TFLiteService.instance.runInference(imagePath);
+      }
+    } catch (e) {
+      print('Error running inference: $e');
+    }
+
+    return CapturedImage(imagePath, inferenceResult: inferenceResult);
   }
 
   void dispose() {

@@ -14,6 +14,10 @@ class CameraCubit extends Cubit<CapturedImage?> {
   CameraController? get cameraController => _cameraController;
 
   Future<void> initializeCamera() async {
+    // Initialize TensorFlow Lite model
+    await repository.initializeTensorFlow();
+
+    // Initialize camera
     _cameraController = await repository.initializeCamera();
     emit(null);
   }
